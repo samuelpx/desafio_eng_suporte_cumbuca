@@ -53,7 +53,7 @@ defmodule DesafioCli do
 
       {[], [], _errors} ->
         IO.puts(
-          ~c"Erro ao processar as opções utilizadas, use \"./desafio_cli -h\" para mais instruções"
+          "Erro ao processar as opções utilizadas, use \"./desafio_cli -h\" para mais instruções"
         )
     end
   end
@@ -83,6 +83,7 @@ defmodule DesafioCli do
     """)
   end
 
+
   defp print_interactive_instructions do
     IO.puts("""
     Olá! Você já pode digitar a lista de nomes de monarcas que deseja corrigir.
@@ -90,6 +91,7 @@ defmodule DesafioCli do
     (use -h ou --help ao executar o programa para saber sobre as outras opções de entrada de dados!)
     """)
   end
+
 
   defp handle_options(options) do
     cond do
@@ -99,6 +101,7 @@ defmodule DesafioCli do
     end
   end
 
+
   defp read_stdin_interactive(acc) do
     input = IO.gets(">>>")
 
@@ -107,6 +110,7 @@ defmodule DesafioCli do
       line -> read_stdin_interactive([line | acc])
     end
   end
+
 
   defp read_stdin do
     case IO.read(:all) do
@@ -120,6 +124,7 @@ defmodule DesafioCli do
         |> IO.puts()
     end
   end
+
 
   defp cumbuquize_file(file_path) do
     case File.read(file_path) do
@@ -137,17 +142,20 @@ defmodule DesafioCli do
     end
   end
 
+
   defp cumbuquize(names) do
     Enum.reduce(names, {[], %{}}, &process_name/2)
     |> elem(0)
     |> Enum.reverse()
   end
 
+
   defp process_name(name, {acc, counter}) do
     new_counter = Map.update(counter, name, 1, &(&1 + 1))
     new_name = "#{name} #{romanize(new_counter[name])}\n"
     {[new_name | acc], new_counter}
   end
+
 
   defp romanize(num) when num >= 100000, do: String.duplicate("M",100) <> romanize(num - 100000)
   defp romanize(num) when num >= 10000, do: String.duplicate("M",10) <> romanize(num - 10000)
@@ -165,4 +173,5 @@ defmodule DesafioCli do
   defp romanize(num) when num >= 4, do: "IV" <> romanize(num - 4)
   defp romanize(num) when num >= 1, do: "I" <> romanize(num - 1)
   defp romanize(_), do: ""
+
 end
