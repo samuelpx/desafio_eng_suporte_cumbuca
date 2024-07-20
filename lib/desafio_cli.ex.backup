@@ -1,0 +1,86 @@
+defmodule DesafioCli do
+  @moduledoc """
+  Ponto de entrada para a CLI.
+  """
+
+  @doc """
+  A função main recebe os argumentos passados na linha de
+  comando como lista de strings e executa a CLI.
+
+  O programa aceita opções adicionais para variedade de inputs:
+
+  -i ou --input para ler o stdin 
+        ex: cat lista_de_nomes | ./desafio_cli
+
+  -f ou --file para ler um arquivo
+        ex: ./desafio_cli -f lista_de_nomes.txt
+  """
+
+  def main(args) do
+    options = [
+    strict: [
+      input: :boolean,
+      file: :boolean,
+      help: :boolean
+      ],
+    aliases: [
+      i: :input,
+      f: :file,
+      h: :help
+      ]]
+
+    case args do
+      []         -> print_instructions()
+      arg when arg in ["-i","--input"] -> lendo_stdin()
+      arg when arg in ["-h","--help"]  -> print_instructions()
+      _          -> IO.puts(cumbuquize(args))
+    end
+  end
+
+
+  def print_instructions() do
+    IO.puts("""
+    Olá! Esse é o serviço corretor de registros de nomes monárquicos!
+    Uso: desafio_cli [Lista de nomes]
+    use desafio_cli -h ou --help para saber métodos adicionais de entrada
+    """)
+  end
+
+
+  def lendo_stdin() do
+    case IO.read(:all) do
+      :eof -> print_instructions()
+      data -> IO.puts(cumbuquize(data |> String.split(["\n", " "], trim: true)))
+    end
+  end
+
+
+  def romanize(num) when num >= 1000, do: "M"  <> romanize(num - 1000)
+  def romanize(num) when num >=  900, do: "CM" <> romanize(num -  900)
+  def romanize(num) when num >=  500, do: "D"  <> romanize(num -  500)
+  def romanize(num) when num >=  400, do: "CD" <> romanize(num -  400)
+  def romanize(num) when num >=  100, do: "C"  <> romanize(num -  100)
+  def romanize(num) when num >=   90, do: "XC" <> romanize(num -   90)
+  def romanize(num) when num >=   50, do: "L"  <> romanize(num -   50)
+  def romanize(num) when num >=   40, do: "XL" <> romanize(num -   40)
+  def romanize(num) when num >=   10, do: "X"  <> romanize(num -   10)
+  def romanize(num) when num >=    9, do: "IX" <> romanize(num -    9)
+  def romanize(num) when num >=    5, do: "V"  <> romanize(num -    5)
+  def romanize(num) when num >=    4, do: "IV" <> romanize(num -    4)
+  def romanize(num) when num >=    1, do: "I"  <> romanize(num -    1)
+  def romanize(_), do: ""
+
+
+  defp process_name(name, {acc, counter}) do
+    new_counter = Map.update(counter, name, 1, &(&1 + 1))
+    new_name = "#{name} #{romanize(new_counter[name])}\n"
+    {[new_name | acc], new_counter}
+  end
+
+
+  def cumbuquize(names) do
+    Enum.reduce(names, {[], %{}}, &process_name/2)
+    |> elem(0)
+    |> Enum.reverse()
+  end
+end
