@@ -157,9 +157,9 @@ defmodule DesafioCli do
   end
 
 
-  defp romanize(num) when num >= 100000, do: String.duplicate("M",100) <> romanize(num - 100000)
-  defp romanize(num) when num >= 10000, do: String.duplicate("M",10) <> romanize(num - 10000)
-  defp romanize(num) when num >= 1000, do: "M" <> romanize(num - 1000)
+  defp romanize(num) when num >= 100_000, do: String.duplicate("M", 100) <> romanize(num - 100_000)
+  defp romanize(num) when num >= 10_000, do: String.duplicate("M", 10) <> romanize(num - 10_000)
+  defp romanize(num) when num >= 1_000, do: "M" <> romanize(num - 1_000)
   defp romanize(num) when num >= 900, do: "CM" <> romanize(num - 900)
   defp romanize(num) when num >= 500, do: "D" <> romanize(num - 500)
   defp romanize(num) when num >= 400, do: "CD" <> romanize(num - 400)
